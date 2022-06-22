@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ckeditor',
+    'accounts',
     # 'ckeditor_uploader',
     'box',
 ]
@@ -91,16 +92,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'OPTIONS': {'min_length': 3, }
     },
 ]
 
@@ -147,8 +140,7 @@ CKEDITOR_CONFIGS = {
     }
 }
 
-MEDIA_ROOT = '/content//media/'
-MEDIA_URL = '/media/'
+LOGIN_REDIRECT_URL = "/"
 
 # Logging
 LOG_DIR = os.path.join(BASE_DIR, 'logs')

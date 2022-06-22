@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from django.forms import ModelForm
 from ckeditor_uploader.widgets import *
 from ckeditor.fields import RichTextField
@@ -9,6 +10,9 @@ from django import forms
 # FORM TO ADD IDEA
 class CreateIdeaForm(ModelForm):
 
+    def __init__(self, user, *args, **kwargs):
+        super(CreateIdeaForm, self).__init__(*args, **kwargs)
+        self.fields['nom'].initial = user.username
 
     theme = ThemeModel.objects.first()
     categorie = CategorieModel.objects.filter(theme=theme).first()
@@ -16,7 +20,7 @@ class CreateIdeaForm(ModelForm):
     nom = forms.CharField(
         label="Prénom",
         required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder':'Saisis ton prénom'}),
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder':'Saisis ton prénom', 'readonly': True}),
         help_text='Saisis ton prénom ou surnom')
 
     description = RichTextField()

@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 {% extends "layout/base.html" %}
 {% load static %}
+{% load tags %}
 {% load i18n %}
 {% block content %}
+{% if request.user.is_authenticated %}
 <div class="d-grid gap-2">
     <a href="{% url 'create-idea' %}" class="btn btn-success my-3 float-end">Nouvelle idée</a>
 </div>
+{% endif %}
 <form action="" method="POST">
     <div class="input-group">
         <select class="form-select" id="inputTheme" aria-label="Theme" name="theme">
@@ -28,6 +31,9 @@
 </form>
 
 <!-- AFFICHAGE DES IDEES ----------------------------------------------------------->
+{% if ideas|length == 0 %}
+<div class="card text-center my-3">Aucune idée pour l'instant ... :(</div>
+{% endif %}
 {% for idea in ideas %}
 <div class="card text-center my-3">
     <div class="card-header text-start" style="background-color:{{ idea.theme.color }}">
@@ -38,13 +44,24 @@
     </div>
     <div class="card-footer text-muted text-start align-middle">
         <div class="text-start float-start"><strong>{{ idea.nom }}</strong> @ {% language 'fr' %}{{ idea.creation_date|date:"d F Y @ H:i" }}{% endlanguage %} {% if idea.last_modified|date:"dMYHi" != idea.creation_date|date:"dMYHi" and idea.last_modified %}<i class="small">(Modifié le {{ idea.last_modified|date:"d F Y @ H:i" }})</i>{% endif %}</div>
+        {% if request.user.is_authenticated %}
+        {% if request.user.username == idea.nom %}
         <a href="{% url 'edit-idea' idea=idea.id %}" class="btn btn-sm float-end btn-outline-dark"><i class="fa-solid fa-pencil"></i></a>
+        {% endif %}
+        {% if request.user|check_like:idea %}
         <button class="btn btn-sm btn-outline-danger float-end position-relative mx-1" type="submit" id="btnidea-{{ idea.id }}">
-            <i class="fa-solid fa-thumbs-up"></i>
+            <i id="thumbidea-{{ idea.id }}" class="fa-solid fa-thumbs-down"></i>
             <span class="badge bg-danger" id="like-{{ idea.id }}">{{ idea.like }}</span>
         </button>
+        {% else %}
+        <button class="btn btn-sm btn-outline-success float-end position-relative mx-1" type="submit" id="btnidea-{{ idea.id }}">
+            <i id="thumbidea-{{ idea.id }}" class="fa-solid fa-thumbs-up"></i>
+            <span class="badge bg-success" id="like-{{ idea.id }}">{{ idea.like }}</span>
+        </button>
+        {% endif %}
         {% csrf_token %}
         <input type="hidden" value="{{ idea.id }}" id="idea-{{ idea.id }}">
+        {% endif %}
     </div>
 </div>
 <script>
@@ -85,6 +102,17 @@
             .then(response => response.json())
                 .then(result => {
                     document.querySelector('#like-'+arg).innerHTML = result['like'];
+                    console.log(result['thumb'])
+                    if (result['thumb'] == false) {
+
+                        document.querySelector('#thumbidea-'+arg).className = 'fa-solid fa-thumbs-up';
+                        document.querySelector('#btnidea-'+arg).className = 'btn btn-sm btn-outline-success float-end position-relative mx-1';
+                        document.querySelector('#like-'+arg).className = 'badge bg-success';
+                    } else {
+                        document.querySelector('#thumbidea-'+arg).className = 'fa-solid fa-thumbs-down';
+                        document.querySelector('#btnidea-'+arg).className = 'btn btn-sm btn-outline-danger float-end position-relative mx-1';
+                        document.querySelector('#like-'+arg).className = 'badge bg-danger';
+                    }
         });
     };
 </script>

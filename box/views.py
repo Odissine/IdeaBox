@@ -25,7 +25,7 @@ def index(request, theme=None, categorie=None):
 
 
 def create_idea(request):
-    form = CreateIdeaForm(request.POST or None)
+    form = CreateIdeaForm(request.user, request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
             form.save()
@@ -40,9 +40,9 @@ def edit_idea(request, idea):
     obj = None
     if idea is not None:
         obj = Idea.objects.get(pk=idea)
-    form = CreateIdeaForm(request.POST or None, instance=obj)
+    form = CreateIdeaForm(request.user, request.POST or None, instance=obj)
     if request.method == 'POST':
-        form = CreateIdeaForm(request.POST, instance=obj)
+        form = CreateIdeaForm(request.user, request.POST, instance=obj)
         if form.is_valid():
             form.save()
             # dt = pytz.timezone("FRA").localize(datetime.now(), is_dst=None)
@@ -53,14 +53,25 @@ def edit_idea(request, idea):
     context = {'form': form, 'idea': obj}
     return render(request, 'box/idea.html', context)
 
+
 def like_idea(request):
     if request.POST:
         id_idea = request.POST.get('idea')
         print(id_idea)
         try:
             idea = Idea.objects.get(pk=id_idea)
-            idea.like += 1
-            idea.save()
-            return JsonResponse({"like": idea.like})
+            user_like = UserLike.objects.filter(idea=idea, user=request.user).first()
+            if user_like:
+                idea.like -= 1
+                idea.save()
+                user_like.delete()
+                thumb = False
+            else:
+                idea.like += 1
+                idea.save()
+                obj = UserLike.objects.create(user=request.user, idea=idea)
+                thumb = True
+
+            return JsonResponse({'like': idea.like, 'thumb': thumb})
         except:
             return False

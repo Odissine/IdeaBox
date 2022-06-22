@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from ckeditor.fields import RichTextField
+from django.contrib.auth.models import User
 
 
 class TimeStamped(models.Model):
@@ -38,7 +39,10 @@ class Categorie(models.Model):
 
 class Idea(models.Model):
     objects = models.Manager()
+    default_user = User.objects.filter(is_superuser=True).first()
+
     nom = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=default_user.pk)
     # description = models.TextField()
     description = RichTextField(blank=True,null=True)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE, null=False, blank=False, related_name='Ideas')
@@ -46,3 +50,9 @@ class Idea(models.Model):
     like = models.IntegerField(default=0)
     creation_date = models.DateTimeField(editable=False, auto_now_add=True)
     last_modified = models.DateTimeField(editable=False, null=True)
+
+
+class UserLike(models.Model):
+    objects = models.Manager()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name='UserLikes')
+    idea = models.ForeignKey(Idea, on_delete=models.CASCADE, null=False, related_name='UserLikes')
