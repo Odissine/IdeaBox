@@ -4,7 +4,7 @@
 {% load i18n %}
 {% block content %}
 <div class="d-grid gap-2">
-    <a href="{% url 'create-idea' %}" class="btn btn-outline-primary my-3 float-end">Nouvelle idée</a>
+    <a href="{% url 'create-idea' %}" class="btn btn-success my-3 float-end">Nouvelle idée</a>
 </div>
 <form action="" method="POST">
     <div class="input-group">
@@ -30,21 +30,22 @@
 <!-- AFFICHAGE DES IDEES ----------------------------------------------------------->
 {% for idea in ideas %}
 <div class="card text-center my-3">
-  <div class="card-header text-start" style="background-color:{{ idea.theme.color }}">
-      <span class="align-middle"><strong>{{ idea.theme }} / {{ idea.categorie }}</strong></span>
-      <a href="{% url 'edit-idea' idea=idea.id %}" class="btn btn-sm float-end link-dark"><i class="fa-solid fa-pencil"></i></a>
-  </div>
-  <div class="card-body">
-    <p class="card-text text-start">{{ idea.description}}</p>
-    <button class="btn btn-outline-danger float-end position-relative" type="submit" id="btnidea-{{ idea.id }}">
-        <i class="fa-solid fa-heart"></i>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="like-{{ idea.id }}">{{ idea.like }}</span>
-    </button>{% csrf_token %}
-    <input type="hidden" value="{{ idea.id }}" id="idea-{{ idea.id }}">
-  </div>
-  <div class="card-footer text-muted text-start">
-      {{ idea.nom }} @ {% language 'fr' %}{{ idea.creation_date|date:"d M Y H:i" }}{% endlanguage %} {% if idea.last_modified|date:"dMYHi" != idea.creation_date|date:"dMYHi" and idea.last_modified %}<i class="small float-end">[Modifié : {{ idea.last_modified }}]</i>{% endif %}
-  </div>
+    <div class="card-header text-start" style="background-color:{{ idea.theme.color }}">
+        <span class="align-middle"><strong>{{ idea.theme }} / {{ idea.categorie }}</strong></span>
+    </div>
+    <div class="card-body text-start">
+        <span class="card-text text-start">{{ idea.description|safe }}</span>
+    </div>
+    <div class="card-footer text-muted text-start align-middle">
+        <div class="text-start float-start"><strong>{{ idea.nom }}</strong> @ {% language 'fr' %}{{ idea.creation_date|date:"d F Y @ H:i" }}{% endlanguage %} {% if idea.last_modified|date:"dMYHi" != idea.creation_date|date:"dMYHi" and idea.last_modified %}<i class="small">(Modifié le {{ idea.last_modified|date:"d F Y @ H:i" }})</i>{% endif %}</div>
+        <a href="{% url 'edit-idea' idea=idea.id %}" class="btn btn-sm float-end btn-outline-dark"><i class="fa-solid fa-pencil"></i></a>
+        <button class="btn btn-sm btn-outline-danger float-end position-relative mx-1" type="submit" id="btnidea-{{ idea.id }}">
+            <i class="fa-solid fa-thumbs-up"></i>
+            <span class="badge bg-danger" id="like-{{ idea.id }}">{{ idea.like }}</span>
+        </button>
+        {% csrf_token %}
+        <input type="hidden" value="{{ idea.id }}" id="idea-{{ idea.id }}">
+    </div>
 </div>
 <script>
     document.querySelector("#btnidea-{{ idea.id }}").addEventListener("click", event => {

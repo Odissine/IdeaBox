@@ -1,49 +1,47 @@
 from django.forms import ModelForm
-from box.models import *
+from ckeditor_uploader.widgets import *
+from ckeditor.fields import RichTextField
+
+from box.models import Idea as IdeaModel, Theme as ThemeModel, Categorie as CategorieModel
 from django import forms
 
 
 # FORM TO ADD IDEA
-class CreateIdeaForm(forms.ModelForm):
+class CreateIdeaForm(ModelForm):
 
-    def __init__(self, *args, **kwargs):
-        # self.nom = kwargs.pop('nom', None)
-        # self.description = kwargs.pop('description', None)
-        # self.theme = kwargs.pop('theme', None)
-        # self.categorie = kwargs.pop('categorie', None)
 
-        super(CreateIdeaForm, self).__init__(*args, **kwargs)
-        theme = Theme.objects.first()
-        categorie = Categorie.objects.filter(theme=theme).first()
+    theme = ThemeModel.objects.first()
+    categorie = CategorieModel.objects.filter(theme=theme).first()
 
-        self.fields['nom'] = forms.CharField(
-            label="Nom",
-            required=True,
-            widget=forms.TextInput(attrs={'class': 'form-control'}),
-            help_text='Saisis ton prénom ou surnom')
+    nom = forms.CharField(
+        label="Prénom",
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder':'Saisis ton prénom'}),
+        help_text='Saisis ton prénom ou surnom')
 
-        self.fields['description'] = forms.CharField(
-            label="Description",
-            required=False,
-            widget=forms.Textarea(attrs={'placeholder': 'Description', 'class': 'form-control'}),
-            help_text='Saisis ton idée !')
+    description = RichTextField()
+            # label="Description",
+            # required=False,
+            # widget=forms.Textarea(attrs={'placeholder': 'Description', 'class': 'form-control'}),
+            # widget=CKEditorUploadingWidget(),
+            # help_text='Saisis ton idée !')
 
-        self.fields['theme'] = forms.ModelChoiceField(
+    theme = forms.ModelChoiceField(
             label="Theme",
-            queryset=Theme.objects.all(),
+            queryset=ThemeModel.objects.all(),
             required=True,
             initial=theme,
-            widget=forms.Select(attrs={'class': 'form-control'}),
+            widget=forms.Select(attrs={'class': 'form-select'}),
             help_text='Choisir un theme')
 
-        self.fields['categorie'] = forms.ModelChoiceField(
+    categorie = forms.ModelChoiceField(
             label="Categorie",
-            queryset=Categorie.objects.all(),
+            queryset=CategorieModel.objects.all(),
             required=True,
             initial=categorie,
-            widget=forms.Select(attrs={'class': 'form-control'}),
+            widget=forms.Select(attrs={'class': 'form-select'}),
             help_text='Choisir une catégorie')
 
     class Meta:
-        model = Idea
+        model = IdeaModel
         fields = ['nom', 'description', 'theme', 'categorie']

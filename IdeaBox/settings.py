@@ -25,7 +25,7 @@ SECRET_KEY = settings_private.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['apelndtg.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ckeditor',
+    # 'ckeditor_uploader',
     'box',
 ]
 
@@ -125,6 +127,28 @@ STATIC_ROOT = os.path.join(CONTENT_DIR, 'assets')
 MEDIA_ROOT = os.path.join(CONTENT_DIR, 'media')
 MEDIA_URL = '/media/'
 
+# CKEDITOR_BASEPATH = '/content/static/ckeditor/ckeditor/'
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_IMAGE_BACKEND = "pillow"
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
+            ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['Font', 'FontSize', 'TextColor'],
+        ],
+        'class': 'form-control',
+        'width': '100%',
+        'toolbarCanCollapse': False,
+    }
+}
+
+MEDIA_ROOT = '/content//media/'
+MEDIA_URL = '/media/'
 
 # Logging
 LOG_DIR = os.path.join(BASE_DIR, 'logs')

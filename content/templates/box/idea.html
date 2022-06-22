@@ -2,29 +2,28 @@
 {% extends "layout/base.html" %}
 {% load static %}
 {% block content %}
-<div class="row">
-    <div class="fs-1 col-6"><a class="btn fs-1 p-0 m-0" href="{% url 'index' %}">Boite à coucou</a></div>
-    <div class="col-6"><a href="{% url 'create-idea' %}" class="btn btn-outline-primary mt-3 float-end">Nouvelle idée</a></div>
-</div>
+<div class="h3">Ajouter votre idée</div>
 <form action="{% if idea %}{% url 'edit-idea' idea.id %}{% else %}{% url 'create-idea' %}{% endif %}" method="POST">
-        {% csrf_token %}
-        <div class="input-group mb-2">
-            <label class="input-group-text">{{ form.nom.label }}</label>
-            {{ form.nom }}
-        </div>
-        <div class="input-group mb-2">
-            {{ form.description }}
-        </div>
-        <div class="input-group mb-2">
-            <label class="input-group-text">{{ form.theme.label }}</label>
-            {{ form.theme }}
-        </div>
-        <div class="input-group mb-2">
-            <label class="input-group-text">{{ form.categorie.label }}</label>
-            {{ form.categorie }}
-        </div>
-    <div class="d-grid gap-2">
-        <button type="submit" class="btn btn-primary">Créer</button>
+    {% csrf_token %}
+    <div class="input-group mb-2">
+        <label class="input-group-text">{{ form.nom.label }}</label>
+        {{ form.nom }}
+    </div>
+    <div class="input-group mb-2">
+        {{ form.media }}
+        {{ form.description }}
+    </div>
+    <div class="input-group mb-2">
+        <label class="input-group-text">{{ form.theme.label }}</label>
+        {{ form.theme }}
+    </div>
+    <div class="input-group mb-2">
+        <label class="input-group-text">{{ form.categorie.label }}</label>
+        {{ form.categorie }}
+    </div>
+    <div class="row">
+        <div class="col-md-8 d-grid gap-2"><button type="submit" class="btn {% if idea %}btn-warning{% else %}btn-success{% endif %}">{% if idea %}Modifier{% else %}Créer{% endif %}</button></div>
+        <div class="col-md-4 d-grid gap-2"><a class="btn btn-secondary" href="{% url 'index' %}">Annuler</a></div>
     </div>
 </form>
 {% endblock %}

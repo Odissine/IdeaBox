@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from ckeditor.fields import RichTextField
 
 
 class TimeStamped(models.Model):
@@ -38,7 +39,8 @@ class Categorie(models.Model):
 class Idea(models.Model):
     objects = models.Manager()
     nom = models.CharField(max_length=255)
-    description = models.TextField()
+    # description = models.TextField()
+    description = RichTextField(blank=True,null=True)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE, null=False, blank=False, related_name='Ideas')
     categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE, null=False, blank=False, related_name='Ideas')
     like = models.IntegerField(default=0)
