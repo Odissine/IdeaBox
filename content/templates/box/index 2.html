@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+{% extends "layout/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block content %}
+<div class="d-grid gap-2">
+    <a href="{% url 'create-idea' %}" class="btn btn-outline-primary my-3 float-end">Nouvelle idée</a>
+</div>
+<form action="" method="POST">
+    <div class="input-group">
+        <select class="form-select" id="inputTheme" aria-label="Theme" name="theme">
+            {% for item in themes %}
+            <option value="{{ item.id }}" {% if theme is not None %}{% if theme.id == item.id %}selected{% endif %}{% endif %}>{{ item.theme }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-outline-secondary" type="button" id="buttonTheme">Filtrer</button>
+    </div>
+    {% if categories is not None and categories|length > 0 %}
+    <div class="input-group">
+        <select class="form-select" id="inputCategorie" aria-label="Categorie" name="categorie">
+            {% for item in categories %}
+            <option value="{{ item.id }}" {% if categorie is not None %}{% if categorie.id == item.id %}selected{% endif %}{% endif %}>{{ item.categorie }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-outline-secondary" type="button" id="buttonCategorie">Filtrer</button>
+    </div>
+    {% endif %}
+</form>
+
+<!-- AFFICHAGE DES IDEES ----------------------------------------------------------->
+{% for idea in ideas %}
+<div class="card text-center my-3">
+  <div class="card-header text-start" style="background-color:{{ idea.theme.color }}">
+      <span class="align-middle"><strong>{{ idea.theme }} / {{ idea.categorie }}</strong></span>
+      <a href="{% url 'edit-idea' idea=idea.id %}" class="btn btn-sm float-end link-dark"><i class="fa-solid fa-pencil"></i></a>
+  </div>
+  <div class="card-body">
+    <p class="card-text text-start">{{ idea.description}}</p>
+    <button class="btn btn-outline-danger float-end position-relative" type="submit" id="btnidea-{{ idea.id }}">
+        <i class="fa-solid fa-heart"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="like-{{ idea.id }}">{{ idea.like }}</span>
+    </button>{% csrf_token %}
+    <input type="hidden" value="{{ idea.id }}" id="idea-{{ idea.id }}">
+  </div>
+  <div class="card-footer text-muted text-start">
+      {{ idea.nom }} @ {% language 'fr' %}{{ idea.creation_date|date:"d M Y H:i" }}{% endlanguage %} {% if idea.last_modified|date:"dMYHi" != idea.creation_date|date:"dMYHi" and idea.last_modified %}<i class="small float-end">[Modifié : {{ idea.last_modified }}]</i>{% endif %}
+  </div>
+</div>
+<script>
+    document.querySelector("#btnidea-{{ idea.id }}").addEventListener("click", event => {
+        likeIdea({{ idea.id }});
+    });
+</script>
+{% endfor %}
+{% endblock %}
+{% block scripts %}
+<script>
+    // THEME SUBMIT
+    $("#buttonTheme").click(function(){
+      var theme = $("#inputTheme").val();
+      window.location.href="/box/idea/" + theme;
+    });
+
+    // CATEGORIE SUBMIT
+    $("#buttonCategorie").click(function(){
+      var theme = $("#inputTheme").val();
+      var categorie = $("#inputCategorie").val();
+      window.location.href="/box/idea/" + theme + "/" + categorie;
+    });
+
+    // LIKE
+    function likeIdea(arg) {
+        let formData = new FormData();
+        let csrfTokenValue = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        formData.append('idea', document.querySelector("#idea-"+arg).value);
+
+        const request = new Request('/box/like', {
+            method: 'POST',
+            body: formData,
+            headers: {'X-CSRFToken': csrfTokenValue}
+        });
+
+        fetch(request)
+            .then(response => response.json())
+                .then(result => {
+                    document.querySelector('#like-'+arg).innerHTML = result['like'];
+        });
+    };
+</script>
+{% endblock %}
