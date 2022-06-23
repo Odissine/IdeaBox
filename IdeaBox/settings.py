@@ -151,22 +151,37 @@ LOG_ERROR = os.path.join(LOG_DIR, 'error.log')
 open(LOG_ERROR, 'a').close()
 LOG_ACCESS_REFUSED = os.path.join(LOG_DIR, 'access_refused.log')
 open(LOG_ACCESS_REFUSED, 'a').close()
+LOG_CONNEXION = os.path.join(LOG_DIR, 'connexion.log')
+open(LOG_CONNEXION, 'a').close()
 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(name)-12s %(levelname)-8s %(message)s'
+        },
+        'file': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+        }
+    },
     'handlers': {
-        'error_file' : {
+        'error_file': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
             'filename': LOG_ERROR,
         },
+        'connexion_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': LOG_CONNEXION,
+        },
     },
     'loggers': {
-        'django': {
-            'handlers': ['error_file'],
-            'level': 'ERROR',
-            'propagate': True,
+        'accounts.views': {
+            'level': 'INFO',
+            'handlers': ['connexion_file'],
         },
     },
 }

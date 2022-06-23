@@ -4,6 +4,9 @@ from django.contrib import messages
 
 from accounts.forms import UsersLoginForm, UsersChangeForm
 from django.shortcuts import render, redirect, HttpResponseRedirect
+from datetime import datetime
+import logging
+logger = logging.getLogger(__name__)
 
 
 def login_view(request):
@@ -16,6 +19,8 @@ def login_view(request):
         password = form.cleaned_data.get("password")
         user = authenticate(username=username, password=password)
         login(request, user)
+        print(username, "s'est connecté(e) @", datetime.now())
+        logger.info(str(username) + " s'est connecté(e)")
         return redirect("/")
     return render(request, "accounts/login.html", {"form": form, "title": "Identification", })
 
