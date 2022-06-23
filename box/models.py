@@ -42,7 +42,7 @@ class Idea(models.Model):
     default_user = User.objects.filter(is_superuser=True).first()
 
     nom = models.CharField(max_length=255)
-    user = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=default_user.pk)
+    user = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=default_user.pk, related_name='Ideas')
     # description = models.TextField()
     description = RichTextField(blank=True,null=True)
     theme = models.ForeignKey(Theme, on_delete=models.CASCADE, null=False, blank=False, related_name='Ideas')
@@ -50,6 +50,7 @@ class Idea(models.Model):
     like = models.IntegerField(default=0)
     creation_date = models.DateTimeField(editable=False, auto_now_add=True)
     last_modified = models.DateTimeField(editable=False, null=True)
+    modified_user = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=default_user.pk, related_name='ModifiedIdeas')
 
 
 class UserLike(models.Model):

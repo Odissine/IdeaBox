@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate
 from django import forms
+from django.contrib.auth.models import User
 
 
 class UsersLoginForm(forms.Form):
@@ -16,12 +17,26 @@ class UsersLoginForm(forms.Form):
         password = self.cleaned_data.get("password")
 
         if username and password:
-            user = authenticate(username = username, password = password)
+            user = authenticate(username=username, password=password)
             if not user:
-                raise forms.ValidationError("This user does not exists")
-            if not user.check_password(password):
-                raise forms.ValidationError("Incorrect Password")
-            if not user.is_active:
-                raise forms.ValidationError("User is no longer active")
+                raise forms.ValidationError("Mot de passe ou nom d'utilisateur inccorect !")
 
         return super(UsersLoginForm, self).clean(*args, **keyargs)
+
+
+class UsersChangeForm(forms.ModelForm):
+    username = forms.CharField()
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    email = forms.CharField()
+
+    def __init__(self, user, *args, **kwargs):
+        super(UsersChangeForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control', "name": "username"})
+        self.fields['first_name'].widget.attrs.update({'class': 'form-control', "name": "first_name"})
+        self.fields['last_name'].widget.attrs.update({'class': 'form-control', "name": "last_name"})
+        self.fields['email'].widget.attrs.update({'class': 'form-control', "name": "email"})
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'username')

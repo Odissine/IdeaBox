@@ -22,5 +22,6 @@ urlpatterns = [
     path('box/idea/<theme>/<categorie>', index, name='idea'),
     path('box/create/', create_idea, name='create-idea'),
     path('box/edit/<idea>', edit_idea, name='edit-idea'),
+    path('box/delete/<idea>', delete_idea, name='delete-idea'),
     path('box/like', like_idea, name='like-idea'),
 ]

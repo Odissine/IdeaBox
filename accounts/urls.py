@@ -19,4 +19,8 @@ from accounts.views import *
 urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
+    path('forget/', forget_view, name='forget'),
+    path('preferences/', preferences_view, name='preferences'),
+    path('help/', help_view, name='help'),
+    path('password_reset/', password_reset, name='password-reset'),
 ]
