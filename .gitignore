@@ -127,4 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+./IdeaBox/settings_private.py
 /IdeaBox/settings_private.py
