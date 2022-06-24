@@ -185,3 +185,6 @@ LOGGING = {
         },
     },
 }
+
+# GMAIL
+config_mail = settings_private.CONFIG_MAIL

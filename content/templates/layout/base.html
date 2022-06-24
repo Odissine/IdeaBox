@@ -19,7 +19,7 @@
 <div class="container-fluid">
 {% if messages %}
     {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} mt-1" role="alert">
+    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} mt-1" role="alert">
     {{ message }}
     <button type="button" class="btn-close float-end small" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
