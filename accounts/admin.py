@@ -1,3 +1,5 @@
-from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 
-# Register your models here.
+UserAdmin.list_display += ('last_login',)  # don't forget the commas
+UserAdmin.list_filter += ('last_login',)
+UserAdmin.fieldsets += ('last_login',)

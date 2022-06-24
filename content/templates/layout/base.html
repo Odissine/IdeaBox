@@ -69,9 +69,33 @@
 </script>
 {% block scripts %}{% endblock %}
 </div>
-<footer class="footer mt-auto py-3 bg-light">
-  <div class="px-4 text-end">
-    <span class="text-muted">Contact : <a href="mailto:cyril@endtg.com">cyril@endtg.com</a></span>
+<footer class="footer mt-auto p-3 bg-light mb-3">
+  <div class="px-4">
+    <div class="float-start">
+        <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Version 1.3</a>
+    </div>
+    <div class="collapse float-start" id="collapseExample">
+      <div class="card card-body">
+        Version 1.2
+        <ul>
+            <li>Récupération de son mot de passe</li>
+            <li>Modification / Ajout Email + Prénom + Nom d'utilisateur</li>
+        </ul>
+          Version 1.1
+        <ul>
+            <li>Connexion avec un comte par défaut (prénom simple et mot de passe par défaut 123Soleil)</li>
+            <li>Liker une idée par utiliateur</li>
+            <li>Editer son idée</li>
+        </ul>
+        Version 1.0
+        <ul>
+            <li>Création d'idée sans authentification</li>
+            <li>Liker une idée à l'infini</li>
+            <li>Filtrer les idées</li>
+        </ul>
+      </div>
+    </div>
+    <span class="text-muted float-end">Contact : <a href="mailto:cyril@endtg.com">cyril@endtg.com</a></span>
   </div>
 </footer>
 </body>
