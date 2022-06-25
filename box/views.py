@@ -95,6 +95,12 @@ def like_idea(request):
                 obj = UserLike.objects.create(user=request.user, idea=idea)
                 thumb = True
 
-            return JsonResponse({'like': idea.like, 'thumb': thumb})
+            likes = UserLike.objects.filter(idea=idea)
+            likers = "<span class='text-start'>"
+            for like in likes:
+                likers = likers + str(like.user.username) + "</br>"
+            likers = likers + "</span>"
+
+            return JsonResponse({'like': idea.like, 'thumb': thumb, 'likers': likers})
         except:
             return False

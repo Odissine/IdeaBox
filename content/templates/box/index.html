@@ -6,7 +6,7 @@
 {% block content %}
 {% if request.user.is_authenticated %}
 <div class="d-grid gap-2">
-    <a href="{% url 'create-idea' %}" class="btn btn-success my-3 float-end">Nouvelle idée</a>
+    <a href="{% url 'create-idea' %}" class="btn btn-success my-3 float-end btn-lg">Nouvelle idée</a>
 </div>
 {% endif %}
 <form action="" method="POST">
@@ -50,12 +50,12 @@
         <a href="{% url 'edit-idea' idea=idea.id %}" class="btn btn-sm float-end btn-outline-dark"><i class="fa-solid fa-pencil"></i></a>
         {% endif %}
         {% if request.user|check_like:idea %}
-        <button class="btn btn-sm btn-outline-danger float-end position-relative mx-1" type="submit" id="btnidea-{{ idea.id }}"  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{{ idea|get_users_like|safe }}">
-            <i id="thumbidea-{{ idea.id }}" class="fa-solid fa-thumbs-down"></i>
-            <span class="badge bg-danger" id="like-{{ idea.id }}">{{ idea.like }}</span>
+        <button class="btn btn-sm btn-outline-success float-end position-relative mx-1" type="submit" id="btnidea-{{ idea.id }}"  {% if idea.like > 0 %} data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{{ idea|get_users_like|safe }}" {% endif %}>
+            <i id="thumbidea-{{ idea.id }}" class="far fa-thumbs-up"></i>
+            <span class="badge bg-success" id="like-{{ idea.id }}">{{ idea.like }}</span>
         </button>
         {% else %}
-        <button class="btn btn-sm btn-outline-success float-end position-relative mx-1" type="submit" id="btnidea-{{ idea.id }}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{{ idea|get_users_like|safe }}">
+        <button class="btn btn-sm btn-outline-success float-end position-relative mx-1" type="submit" id="btnidea-{{ idea.id }}" {% if idea.like > 0 %} data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{{ idea|get_users_like|safe }}"{% endif %}>
             <i id="thumbidea-{{ idea.id }}" class="fa-solid fa-thumbs-up"></i>
             <span class="badge bg-success" id="like-{{ idea.id }}">{{ idea.like }}</span>
         </button>
@@ -126,16 +126,12 @@
             .then(response => response.json())
                 .then(result => {
                     document.querySelector('#like-'+arg).innerHTML = result['like'];
+                    document.querySelector('#btnidea-'+arg).dataset.bsOriginalTitle = result['likers'];
                     console.log(result['thumb'])
                     if (result['thumb'] == false) {
-
                         document.querySelector('#thumbidea-'+arg).className = 'fa-solid fa-thumbs-up';
-                        document.querySelector('#btnidea-'+arg).className = 'btn btn-sm btn-outline-success float-end position-relative mx-1';
-                        document.querySelector('#like-'+arg).className = 'badge bg-success';
                     } else {
-                        document.querySelector('#thumbidea-'+arg).className = 'fa-solid fa-thumbs-down';
-                        document.querySelector('#btnidea-'+arg).className = 'btn btn-sm btn-outline-danger float-end position-relative mx-1';
-                        document.querySelector('#like-'+arg).className = 'badge bg-danger';
+                        document.querySelector('#thumbidea-'+arg).className = 'far fa-thumbs-up';
                     }
         });
     };
